@@ -68,7 +68,7 @@ public class UserController {
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         userService.userLogin(userAccount, userPassword, request);
-        LoginUserVO loginUserVO = userService.getLoginUserVO(userService.getById(userLoginRequest.getUserAccount()));
+        LoginUserVO loginUserVO = userService.userLogin(userAccount, userPassword, request);
         return ResultUtils.success(loginUserVO);
     }
 

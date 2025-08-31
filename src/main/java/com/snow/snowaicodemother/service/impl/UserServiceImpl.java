@@ -72,7 +72,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements U
 
     @Override
     public LoginUserVO getLoginUserVO(User user) {
-        if (user == null) {
+        if (Objects.isNull(user)) {
             return null;
         }
         LoginUserVO loginUserVO = new LoginUserVO();
