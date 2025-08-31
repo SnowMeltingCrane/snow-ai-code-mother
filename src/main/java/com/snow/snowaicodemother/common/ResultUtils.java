@@ -1,9 +1,6 @@
 package com.snow.snowaicodemother.common;
 
 import com.snow.snowaicodemother.exception.ErrorCode;
-import lombok.Data;
-
-import java.io.Serializable;
 
 /**
  * @author xueruohang
