@@ -2,7 +2,6 @@ package com.snow.snowaicodemother.controller;
 
 import com.snow.snowaicodemother.common.BaseResponse;
 import com.snow.snowaicodemother.common.ResultUtils;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
