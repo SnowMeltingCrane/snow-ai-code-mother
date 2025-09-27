@@ -7,6 +7,7 @@ import com.snow.snowaicodemother.model.dto.app.AppQueryRequest;
 import com.snow.snowaicodemother.model.entity.App;
 import com.snow.snowaicodemother.model.entity.User;
 import com.snow.snowaicodemother.model.vo.AppVO;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -81,6 +82,15 @@ public interface AppService extends IService<App> {
      * @param loginUser 当前登录用户
      */
     void checkAppAuth(App app, User loginUser);
+
+    /**
+     * 通过聊天生成代码
+     * @param appId     应用id
+     * @param message   用户提示词
+     * @param loginUser 当前登录用户
+     * @return 生成的代码
+     */
+    Flux<String> chatToGenCode(Long appId, String message, User loginUser);
 
 
 }
