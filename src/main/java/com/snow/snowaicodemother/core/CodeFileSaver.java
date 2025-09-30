@@ -24,10 +24,11 @@ public class CodeFileSaver {
 
     /**
      * 保存html代码结果
+     *
      * @param htmlCodeResult
      * @return
      */
-    public static File saveHtmlCodeResult(HtmlCodeResult htmlCodeResult){
+    public static File saveHtmlCodeResult(HtmlCodeResult htmlCodeResult) {
         String baseDirPath = buildUniqueDir(CodeGenTypeEnum.HTML.getValue());
         writeToFile(baseDirPath, "index.html", htmlCodeResult.getHtmlCode());
         return new File(baseDirPath);
@@ -35,10 +36,11 @@ public class CodeFileSaver {
 
     /**
      * 保存多个文件代码结果
+     *
      * @param multiFileCodeResult
      * @return
      */
-    public static File saveMultiFileCodeResult(MultiFileCodeResult multiFileCodeResult){
+    public static File saveMultiFileCodeResult(MultiFileCodeResult multiFileCodeResult) {
         String baseDirPath = buildUniqueDir(CodeGenTypeEnum.MULTI_FILE.getValue());
         writeToFile(baseDirPath, "index.html", multiFileCodeResult.getHtmlCode());
         writeToFile(baseDirPath, "style.css", multiFileCodeResult.getCssCode());
@@ -48,11 +50,12 @@ public class CodeFileSaver {
 
     /**
      * 生成唯一目录
+     *
      * @param bizType
      * @return
      */
-    private static String buildUniqueDir(String bizType){
-        String uniqueDirName = StrUtil.format("{}_{}" , bizType, IdUtil.getSnowflakeNextIdStr());
+    private static String buildUniqueDir(String bizType) {
+        String uniqueDirName = StrUtil.format("{}_{}", bizType, IdUtil.getSnowflakeNextIdStr());
         String dirPath = FILE_SAVE_ROOT_DIR + File.separator + uniqueDirName;
         FileUtil.mkdir(dirPath);
         return dirPath;
@@ -60,6 +63,7 @@ public class CodeFileSaver {
 
     /**
      * 保存单个文件
+     *
      * @param dirPath
      * @param fileName
      * @param content

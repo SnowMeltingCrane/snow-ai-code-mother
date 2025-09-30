@@ -30,7 +30,7 @@ class AiCodeGeneratorFacadeTest {
 
     @Test
     void generateAndSaveCodeStream() {
-        Flux<String> codeStream =  aiCodeGeneratorFacade.generateAndSaveCodeStream("生成一个html页面，内容是Hello World", CodeGenTypeEnum.HTML, 1L);
+        Flux<String> codeStream = aiCodeGeneratorFacade.generateAndSaveCodeStream("生成一个html页面，内容是Hello World", CodeGenTypeEnum.HTML, 1L);
         List<String> result = codeStream.collectList().block();
         Assertions.assertNotNull(result);
         String completeCode = String.join("", result);

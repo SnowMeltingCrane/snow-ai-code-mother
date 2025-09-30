@@ -8,6 +8,7 @@ import com.snow.snowaicodemother.model.enums.CodeGenTypeEnum;
 
 /**
  * 多文件代码保存器
+ *
  * @author xueruohang
  * @date 2025/9/21 16:03
  */
@@ -17,6 +18,7 @@ public class MultiFileCodeFileSaverTemplate extends CodeFileSaverTemplate<MultiF
     protected CodeGenTypeEnum getCodeGenType() {
         return CodeGenTypeEnum.MULTI_FILE;
     }
+
     @Override
     protected void saveFiles(MultiFileCodeResult result, String baseDirPath) {
         // 保存 HTML 文件

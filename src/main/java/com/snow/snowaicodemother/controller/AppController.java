@@ -58,20 +58,20 @@ public class AppController {
     @Resource
     private UserService userService;
 
-    @GetMapping(value = "/chat/gen/code",produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/chat/gen/code", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> chatToGenCode(@RequestParam Long appId,
-                                      @RequestParam String message,
-                                      HttpServletRequest request) {
+                                                       @RequestParam String message,
+                                                       HttpServletRequest request) {
         //参数校验
-        ThrowUtils.throwIf(Objects.isNull(appId) || appId <= 0, ErrorCode.PARAMS_ERROR,"应用id错误");
-        ThrowUtils.throwIf(StrUtil.isBlank(message), ErrorCode.PARAMS_ERROR,"提示词不能为空");
+        ThrowUtils.throwIf(Objects.isNull(appId) || appId <= 0, ErrorCode.PARAMS_ERROR, "应用id错误");
+        ThrowUtils.throwIf(StrUtil.isBlank(message), ErrorCode.PARAMS_ERROR, "提示词不能为空");
         //获取当前登录用户
         User loginUser = userService.getLoginUser(request);
         //调用服务生成代码（SSE流式返回）
         Flux<String> contentFlux = appService.chatToGenCode(appId, message, loginUser);
         return contentFlux
                 .map(chunk -> {
-                    Map<String,String> wrapper = Map.of("d", chunk);
+                    Map<String, String> wrapper = Map.of("d", chunk);
                     String jsonData = JSONUtil.toJsonStr(wrapper);
                     return ServerSentEvent.<String>builder()
                             .data(jsonData)
@@ -131,7 +131,6 @@ public class AppController {
         String deployUrl = appService.deployApp(appId, loginUser);
         return ResultUtils.success(deployUrl);
     }
-
 
 
     /**
@@ -194,14 +193,14 @@ public class AppController {
         }
         long id = deleteRequest.getId();
         User loginUser = userService.getLoginUser(request);
-        
+
         // 判断是否存在
         App oldApp = appService.getById(id);
         ThrowUtils.throwIf(Objects.isNull(oldApp), ErrorCode.NOT_FOUND_ERROR);
-        
+
         // 仅本人或管理员可删除
         appService.checkAppAuth(oldApp, loginUser);
-        
+
         boolean result = appService.removeById(id);
         return ResultUtils.success(result);
     }
@@ -281,7 +280,7 @@ public class AppController {
     /**
      * 根据 id 获取应用详情
      *
-     * @param id      应用 id
+     * @param id 应用 id
      * @return 应用详情
      */
     @GetMapping("/get/vo")

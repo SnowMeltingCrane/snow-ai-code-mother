@@ -71,7 +71,7 @@ public interface AppService extends IService<App> {
      * 分页查询我的应用
      *
      * @param appQueryRequest 查询请求
-     * @param loginUser 当前登录用户
+     * @param loginUser       当前登录用户
      * @return 我的应用分页
      */
     Page<AppVO> listMyAppVOByPage(AppQueryRequest appQueryRequest, User loginUser);
@@ -79,13 +79,14 @@ public interface AppService extends IService<App> {
     /**
      * 校验应用权限（是否为应用创建者）
      *
-     * @param app 应用
+     * @param app       应用
      * @param loginUser 当前登录用户
      */
     void checkAppAuth(App app, User loginUser);
 
     /**
      * 通过聊天生成代码
+     *
      * @param appId     应用id
      * @param message   用户提示词
      * @param loginUser 当前登录用户

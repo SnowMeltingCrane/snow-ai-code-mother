@@ -8,10 +8,11 @@ import com.snow.snowaicodemother.model.enums.CodeGenTypeEnum;
 
 /**
  * HTML 代码文件保存模板
+ *
  * @author xueruohang
  * @date 2025/9/21 15:55
  */
-public class HtmlCodeFileSaverTemplate extends CodeFileSaverTemplate<HtmlCodeResult>{
+public class HtmlCodeFileSaverTemplate extends CodeFileSaverTemplate<HtmlCodeResult> {
 
     @Override
     protected CodeGenTypeEnum getCodeGenType() {
@@ -26,7 +27,7 @@ public class HtmlCodeFileSaverTemplate extends CodeFileSaverTemplate<HtmlCodeRes
     @Override
     protected void validateInput(HtmlCodeResult result) {
         super.validateInput(result);
-        if(StrUtil.isBlank(result.getHtmlCode())){
+        if (StrUtil.isBlank(result.getHtmlCode())) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "HTML 代码不能为空");
         }
     }

@@ -45,6 +45,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取当前登录用户
+     *
      * @param request 请求
      * @return 当前登录用户
      */
@@ -61,6 +62,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取脱敏的登录用户
+     *
      * @param user
      * @return
      */
@@ -68,6 +70,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取脱敏的登录用户列表
+     *
      * @param userList
      * @return
      */
@@ -75,6 +78,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取查询条件创建的QueryWrapper
+     *
      * @param userQueryRequest
      * @return
      */
@@ -82,6 +86,7 @@ public interface UserService extends IService<User> {
 
     /**
      * 获取加密后的密码
+     *
      * @param userPassword
      * @return
      */

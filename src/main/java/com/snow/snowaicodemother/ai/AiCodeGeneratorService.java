@@ -13,6 +13,7 @@ public interface AiCodeGeneratorService {
 
     /**
      * 生成代码
+     *
      * @param userMessage 用户提示词
      * @return ai 输出的结果
      */
@@ -21,6 +22,7 @@ public interface AiCodeGeneratorService {
 
     /**
      * 生成代码
+     *
      * @param userMessage 用户提示词
      * @return ai 输出的结果
      */
@@ -29,6 +31,7 @@ public interface AiCodeGeneratorService {
 
     /**
      * 流式生成代码
+     *
      * @param userMessage 用户提示词
      * @return ai 输出的结果
      */
@@ -37,9 +40,10 @@ public interface AiCodeGeneratorService {
 
     /**
      * 流式生成代码
+     *
      * @param userMessage 用户提示词
      * @return ai 输出的结果
      */
     @SystemMessage(fromResource = "prompt/codegen-multi-file-system-prompt.txt")
-    Flux<String>  generateMultiFileCodeStream(String userMessage);
+    Flux<String> generateMultiFileCodeStream(String userMessage);
 }

@@ -44,12 +44,13 @@ public class UserController {
 
     /**
      * 用户注册
+     *
      * @param userRegisterRequest 用户注册请求
      * @return 用户id
      */
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest) {
-        ThrowUtils.throwIf(Objects.isNull(userRegisterRequest) , ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(Objects.isNull(userRegisterRequest), ErrorCode.PARAMS_ERROR);
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
@@ -59,13 +60,14 @@ public class UserController {
 
     /**
      * 用户登录
+     *
      * @param userLoginRequest 用户登录请求
-     * @param request 请求对象
+     * @param request          请求对象
      * @return 登录用户信息
      */
     @PostMapping("/login")
-    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest , HttpServletRequest request) {
-        ThrowUtils.throwIf(Objects.isNull(userLoginRequest) , ErrorCode.PARAMS_ERROR);
+    public BaseResponse<LoginUserVO> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(Objects.isNull(userLoginRequest), ErrorCode.PARAMS_ERROR);
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         userService.userLogin(userAccount, userPassword, request);
@@ -81,7 +83,7 @@ public class UserController {
 
     @PostMapping("/logout")
     public BaseResponse<Boolean> userLogout(HttpServletRequest request) {
-        ThrowUtils.throwIf(Objects.isNull(request) , ErrorCode.PARAMS_ERROR);
+        ThrowUtils.throwIf(Objects.isNull(request), ErrorCode.PARAMS_ERROR);
         boolean result = userService.userLogout(request);
         return ResultUtils.success(result);
     }

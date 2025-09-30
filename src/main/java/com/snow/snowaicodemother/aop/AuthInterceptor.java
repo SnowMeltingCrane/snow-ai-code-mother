@@ -31,6 +31,7 @@ public class AuthInterceptor {
 
     /**
      * 执行拦截
+     *
      * @param joinPoint 切入点
      * @param authCheck 权限校验注解
      * @return
@@ -45,18 +46,18 @@ public class AuthInterceptor {
 
         User loginUser = userService.getLoginUser(request);
         UserRoleEnum mustRoleEnum = UserRoleEnum.getEnumByValue(mustRole);
-        if(Objects.isNull(mustRoleEnum)){
+        if (Objects.isNull(mustRoleEnum)) {
             return joinPoint.proceed();
         }
         // 以下代码必须有权限
         UserRoleEnum userRoleEnum = UserRoleEnum.getEnumByValue(loginUser.getUserRole());
 
         // 没有权限直接拒绝
-        if(Objects.isNull(userRoleEnum)){
+        if (Objects.isNull(userRoleEnum)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
         // 要求必须有管理员权限
-        if(UserRoleEnum.ADMIN.equals(mustRoleEnum)&&!UserRoleEnum.ADMIN.equals(userRoleEnum)){
+        if (UserRoleEnum.ADMIN.equals(mustRoleEnum) && !UserRoleEnum.ADMIN.equals(userRoleEnum)) {
             throw new BusinessException(ErrorCode.NO_AUTH_ERROR);
         }
 

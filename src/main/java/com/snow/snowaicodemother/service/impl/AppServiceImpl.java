@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
  * @author <a href="https://github.com/SnowMeltingCrane">雪融鹤</a>
  */
 @Service
-public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppService{
+public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppService {
 
     @Resource
     private UserService userService;
@@ -134,7 +134,7 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
                 .collect(Collectors.toSet());
         Map<Long, List<User>> userIdUserListMap = userService.listByIds(userIdSet).stream()
                 .collect(Collectors.groupingBy(User::getId));
-        
+
         // 2. 填充信息
         List<AppVO> appVOList = appList.stream().map(app -> {
             AppVO appVO = new AppVO();
@@ -177,12 +177,12 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         int size = appQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        
+
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .like("appName", appQueryRequest.getAppName())
                 .orderBy("priority", false)
                 .orderBy("createTime", false);
-        
+
         Page<App> appPage = this.page(Page.of(current, size), queryWrapper);
         return getAppVOPage(appPage);
     }
@@ -196,12 +196,12 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         int size = appQueryRequest.getPageSize();
         // 限制爬虫
         ThrowUtils.throwIf(size > 20, ErrorCode.PARAMS_ERROR);
-        
+
         QueryWrapper queryWrapper = QueryWrapper.create()
                 .eq("userId", loginUser.getId())
                 .like("appName", appQueryRequest.getAppName())
                 .orderBy("createTime", false);
-        
+
         Page<App> appPage = this.page(Page.of(current, size), queryWrapper);
         return getAppVOPage(appPage);
     }
@@ -278,9 +278,9 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App>  implements AppS
         updateApp.setDeployKey(deployKey);
         updateApp.setDeployedTime(LocalDateTime.now());
         boolean updateResult = this.updateById(updateApp);
-        ThrowUtils.throwIf(!updateResult, ErrorCode.SYSTEM_ERROR,"更新应用部署信息失败");
+        ThrowUtils.throwIf(!updateResult, ErrorCode.SYSTEM_ERROR, "更新应用部署信息失败");
         // 9.返回URL
-        return String.format("%s/%s/",AppConstant.CODE_DEPLOY_HOST, deployKey);
+        return String.format("%s/%s/", AppConstant.CODE_DEPLOY_HOST, deployKey);
     }
 
 }

@@ -31,7 +31,7 @@ import static com.snow.snowaicodemother.constant.UserConstant.USER_LOGIN_STATE;
  * @author <a href="https://github.com/SnowMeltingCrane">雪融鹤</a>
  */
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements UserService{
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkPassword) {
@@ -113,7 +113,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements U
     public User getLoginUser(HttpServletRequest request) {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
-        if(Objects.isNull(currentUser) || Objects.isNull(currentUser.getId())){
+        if (Objects.isNull(currentUser) || Objects.isNull(currentUser.getId())) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
         }
 
@@ -175,7 +175,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements U
                 .like("userProfile", userProfile)
                 .orderBy(sortField, "ascend".equals(sortOrder));
     }
-
 
 
     @Override
