@@ -3,6 +3,7 @@ package com.snow.snowaicodemother.core.saver;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
+import com.snow.snowaicodemother.constant.AppConstant;
 import com.snow.snowaicodemother.exception.BusinessException;
 import com.snow.snowaicodemother.exception.ErrorCode;
 import com.snow.snowaicodemother.model.enums.CodeGenTypeEnum;
@@ -21,7 +22,7 @@ public abstract class CodeFileSaverTemplate<T>  {
     /**
      * 临时文件保存目录
      */
-    private static final String FILE_SAVE_ROOT_DIR = System.getProperty("user.dir") + "/tmp/code_output";
+    private static final String FILE_SAVE_ROOT_DIR = AppConstant.CODE_OUTPUT_ROOT_DIR;
 
 
     /**

@@ -16,6 +16,7 @@ import com.snow.snowaicodemother.exception.ErrorCode;
 import com.snow.snowaicodemother.exception.ThrowUtils;
 import com.snow.snowaicodemother.model.dto.app.AppAddRequest;
 import com.snow.snowaicodemother.model.dto.app.AppAdminUpdateRequest;
+import com.snow.snowaicodemother.model.dto.app.AppDeployRequest;
 import com.snow.snowaicodemother.model.dto.app.AppQueryRequest;
 import com.snow.snowaicodemother.model.dto.app.AppUpdateRequest;
 import com.snow.snowaicodemother.model.entity.App;
@@ -111,6 +112,26 @@ public class AppController {
         ThrowUtils.throwIf(!result, ErrorCode.OPERATION_ERROR);
         return ResultUtils.success(app.getId());
     }
+
+    /**
+     * 应用部署
+     *
+     * @param appDeployRequest 部署请求
+     * @param request          请求
+     * @return 部署 URL
+     */
+    @PostMapping("/deploy")
+    public BaseResponse<String> deployApp(@RequestBody AppDeployRequest appDeployRequest, HttpServletRequest request) {
+        ThrowUtils.throwIf(Objects.isNull(appDeployRequest), ErrorCode.PARAMS_ERROR);
+        Long appId = appDeployRequest.getAppId();
+        ThrowUtils.throwIf(Objects.isNull(appId) || appId <= 0, ErrorCode.PARAMS_ERROR, "应用 ID 不能为空");
+        // 获取当前登录用户
+        User loginUser = userService.getLoginUser(request);
+        // 调用服务部署应用
+        String deployUrl = appService.deployApp(appId, loginUser);
+        return ResultUtils.success(deployUrl);
+    }
+
 
 
     /**
