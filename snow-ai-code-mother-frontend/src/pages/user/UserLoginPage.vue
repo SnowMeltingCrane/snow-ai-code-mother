@@ -26,20 +26,20 @@
   </div>
 </template>
 
-<script lang="ts" setup>
-import { reactive } from 'vue'
+<script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useLoginUserStore } from '@/stores/loginUser.ts'
 import { userLogin } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
+import { reactive } from 'vue'
+
+const router = useRouter()
+const loginUserStore = useLoginUserStore()
 
 const formState = reactive<API.UserLoginRequest>({
   userAccount: '',
   userPassword: '',
 })
-
-const router = useRouter()
-const loginUserStore = useLoginUserStore()
 
 /**
  * 提交表单
@@ -59,14 +59,14 @@ const handleSubmit = async (values: any) => {
     message.error('登录失败，' + res.data.message)
   }
 }
-
-
 </script>
 
 <style scoped>
 #userLoginPage {
-  max-width: 360px;
-  margin: 0 auto;
+  background: white;
+  max-width: 720px;
+  padding: 24px;
+  margin: 24px auto;
 }
 
 .title {
@@ -86,6 +86,4 @@ const handleSubmit = async (values: any) => {
   font-size: 13px;
   text-align: right;
 }
-
 </style>
-

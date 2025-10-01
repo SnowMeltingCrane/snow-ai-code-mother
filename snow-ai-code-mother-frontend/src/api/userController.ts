@@ -41,10 +41,10 @@ export async function getUserById(
   })
 }
 
-/** 此处后端没有提供注释 POST /user/get/login */
+/** 此处后端没有提供注释 GET /user/get/login */
 export async function getLoginUser(options?: { [key: string]: any }) {
   return request<API.BaseResponseLoginUserVO>('/user/get/login', {
-    method: 'POST',
+    method: 'GET',
     ...(options || {}),
   })
 }

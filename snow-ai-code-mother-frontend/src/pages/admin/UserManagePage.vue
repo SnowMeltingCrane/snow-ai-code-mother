@@ -42,80 +42,11 @@
     </a-table>
   </div>
 </template>
-
-<script setup lang="ts">
-// 数据
+<script lang="ts" setup>
 import { computed, onMounted, reactive, ref } from 'vue'
-import { deleteUser, listUserVoByPage } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
+import { deleteUser, listUserVoByPage } from '@/api/userController.ts'
 import dayjs from 'dayjs'
-
-const data = ref<API.UserVO[]>([])
-const total = ref(0)
-
-// 搜索条件
-const searchParams = reactive<API.UserQueryRequest>({
-  pageNum: 1,
-  pageSize: 10,
-})
-
-// 获取数据
-const fetchData = async () => {
-  const res = await listUserVoByPage({
-    ...searchParams,
-  })
-  if (res.data.data) {
-    data.value = res.data.data.records ?? []
-    total.value = res.data.data.totalRow ?? 0
-  } else {
-    message.error('获取数据失败，' + res.data.message)
-  }
-}
-
-// 分页参数
-const pagination = computed(() => {
-  return {
-    current: searchParams.pageNum ?? 1,
-    pageSize: searchParams.pageSize ?? 10,
-    total: total.value,
-    showSizeChanger: true,
-    showTotal: (total: number) => `共 ${total} 条`,
-  }
-})
-
-// 表格分页变化时的操作
-const doTableChange = (page: { current: number; pageSize: number }) => {
-  searchParams.pageNum = page.current
-  searchParams.pageSize = page.pageSize
-  fetchData()
-}
-
-// 搜索数据
-const doSearch = () => {
-  // 重置页码
-  searchParams.pageNum = 1
-  fetchData()
-}
-
-// 删除数据
-const doDelete = async (id: string) => {
-  if (!id) {
-    return
-  }
-  const res = await deleteUser({ id })
-  if (res.data.code === 0) {
-    message.success('删除成功')
-    // 刷新数据
-    fetchData()
-  } else {
-    message.error('删除失败')
-  }
-}
-
-// 页面加载时请求一次
-onMounted(() => {
-  fetchData()
-})
 
 const columns = [
   {
@@ -147,10 +78,88 @@ const columns = [
     dataIndex: 'createTime',
   },
   {
+    title: '更新时间',
+    dataIndex: 'updateTime',
+  },
+  {
     title: '操作',
     key: 'action',
   },
 ]
+
+// 数据
+const data = ref<API.UserVO[]>([])
+const total = ref(0)
+
+// 搜索条件
+const searchParams = reactive<API.UserQueryRequest>({
+  pageNum: 1,
+  pageSize: 10,
+})
+
+// 获取数据
+const fetchData = async () => {
+  const res = await listUserVoByPage({
+    ...searchParams,
+  })
+  if (res.data.data) {
+    data.value = res.data.data.records ?? []
+    total.value = res.data.data.totalRow ?? 0
+  } else {
+    message.error('获取数据失败，' + res.data.message)
+  }
+}
+
+// 页面加载时请求一次
+onMounted(() => {
+  fetchData()
+})
+
+// 分页参数
+const pagination = computed(() => {
+  return {
+    current: searchParams.pageNum ?? 1,
+    pageSize: searchParams.pageSize ?? 10,
+    total: total.value,
+    showSizeChanger: true,
+    showTotal: (total: number) => `共 ${total} 条`,
+  }
+})
+
+// 表格变化处理
+const doTableChange = (page: { current: number; pageSize: number }) => {
+  searchParams.pageNum = page.current
+  searchParams.pageSize = page.pageSize
+  fetchData()
+}
+
+// 获取数据
+const doSearch = () => {
+  // 重置页码
+  searchParams.pageNum = 1
+  fetchData()
+}
+
+// 删除数据
+const doDelete = async (id: number) => {
+  if (!id) {
+    return
+  }
+  const res = await deleteUser({ id })
+  if (res.data.code === 0) {
+    message.success('删除成功')
+    // 刷新数据
+    fetchData()
+  } else {
+    message.error('删除失败')
+  }
+}
 </script>
 
-<style scoped></style>
+<style scoped>
+#userManagePage {
+  padding: 24px;
+  background: white;
+  margin-top: 16px;
+}
+</style>
