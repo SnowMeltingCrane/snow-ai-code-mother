@@ -52,9 +52,9 @@ public interface AiCodeGeneratorService {
     /**
      * 流式生成Vue项目代码
      *
-     * @param appId         应用ID
-     * @param userMessage   用户提示词
-     * @return ai 输出的结果
+     * @param appId       应用ID
+     * @param userMessage 用户提示词
+     * @return ai         输出的结果
      */
     @SystemMessage(fromResource = "prompt/codegen-vue-project-system-prompt.txt")
     Flux<String> generateVueProjectCodeStream(@MemoryId Long appId, @UserMessage String userMessage);

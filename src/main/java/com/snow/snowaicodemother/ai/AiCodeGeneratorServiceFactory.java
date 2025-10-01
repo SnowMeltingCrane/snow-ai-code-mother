@@ -77,17 +77,17 @@ public class AiCodeGeneratorServiceFactory {
      * @param appId 应用id
      * @return ai服务
      */
-    public AiCodeGeneratorService getAiCodeGeneratorService(long appId,CodeGenTypeEnum codeGenType) {
+    public AiCodeGeneratorService getAiCodeGeneratorService(long appId, CodeGenTypeEnum codeGenType) {
         String cacheKey = buildCacheKey(appId, codeGenType);
         // 根据appId获取对应的chatMemory
-        return serviceCache.get(cacheKey,key -> createAiCodeGeneratorService(appId, codeGenType));
+        return serviceCache.get(cacheKey, key -> createAiCodeGeneratorService(appId, codeGenType));
     }
 
     /**
      * 创建ai服务
      *
-     * @param appId         应用id
-     * @param codeGenType   代码生成类型
+     * @param appId       应用id
+     * @param codeGenType 代码生成类型
      * @return ai服务
      */
     private AiCodeGeneratorService createAiCodeGeneratorService(Long appId, CodeGenTypeEnum codeGenType) {
@@ -100,7 +100,7 @@ public class AiCodeGeneratorServiceFactory {
                 .build();
         // 从数据库中加载对话历史
         chatHistoryService.loadChatHistoryToMemory(appId, chatMemory, 20);
-        return switch (codeGenType){
+        return switch (codeGenType) {
             // Vue 项目生成，使用工具调用和推理模型
             case VUE_PROJECT -> AiServices.builder(AiCodeGeneratorService.class)
                     .chatModel(chatModel)
@@ -112,12 +112,12 @@ public class AiCodeGeneratorServiceFactory {
                             ToolExecutionResultMessage.from(toolExecutionRequest, "Error: there is no tool called" + toolExecutionRequest.name()))
                     .build();
             // HTML 和 多文件生成，使用流式对话模型
-            case HTML,MULTI_FILE  -> AiServices.builder(AiCodeGeneratorService.class)
+            case HTML, MULTI_FILE -> AiServices.builder(AiCodeGeneratorService.class)
                     .chatModel(chatModel)
                     .streamingChatModel(openAiStreamingChatModel)
                     .chatMemory(chatMemory)
                     .build();
-            default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR,"不支持的代码生成类型" + codeGenType);
+            default -> throw new BusinessException(ErrorCode.SYSTEM_ERROR, "不支持的代码生成类型" + codeGenType);
         };
     }
 

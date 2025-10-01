@@ -40,7 +40,7 @@ public class AiCodeGeneratorFacade {
         if (Objects.isNull(codeGenTypeEnum)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "生成模式不能为空");
         }
-        AiCodeGeneratorService aiCodeGeneratorService = aiCodeGeneratorServiceFactory.getAiCodeGeneratorService(appId,codeGenTypeEnum);
+        AiCodeGeneratorService aiCodeGeneratorService = aiCodeGeneratorServiceFactory.getAiCodeGeneratorService(appId, codeGenTypeEnum);
         return switch (codeGenTypeEnum) {
             case HTML -> {
                 HtmlCodeResult codeResult = aiCodeGeneratorService.generateHtmlCode(userMessage);

@@ -52,10 +52,10 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     /**
      * 加载历史会话到内存中
      *
-     * @param appId         应用id
-     * @param chatMemory    记忆
-     * @param maxCount      最大数量
-     * @return              加载的条数
+     * @param appId      应用id
+     * @param chatMemory 记忆
+     * @param maxCount   最大数量
+     * @return 加载的条数
      */
     @Override
     public int loadChatHistoryToMemory(Long appId, MessageWindowChatMemory chatMemory, int maxCount) {
