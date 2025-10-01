@@ -6,6 +6,7 @@ import com.mybatisflex.core.service.IService;
 import com.snow.snowaicodemother.model.dto.chatHistory.ChatHistoryQueryRequest;
 import com.snow.snowaicodemother.model.entity.ChatHistory;
 import com.snow.snowaicodemother.model.entity.User;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 
 import java.time.LocalDateTime;
 
@@ -17,6 +18,8 @@ import java.time.LocalDateTime;
 public interface ChatHistoryService extends IService<ChatHistory> {
 
     boolean deleteByAppId(Long appId);
+
+    int loadChatHistoryToMemory(Long appId, MessageWindowChatMemory chatMemory, int maxCount);
 
     boolean addChatMessage(Long appId, String message, String messageType, Long userId);
 

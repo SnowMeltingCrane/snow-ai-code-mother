@@ -1,5 +1,6 @@
 package com.snow.snowaicodemother.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
@@ -15,11 +16,16 @@ import com.snow.snowaicodemother.model.entity.User;
 import com.snow.snowaicodemother.model.enums.ChatHistoryMessageTypeEnum;
 import com.snow.snowaicodemother.service.AppService;
 import com.snow.snowaicodemother.service.ChatHistoryService;
+import dev.langchain4j.data.message.AiMessage;
+import dev.langchain4j.data.message.UserMessage;
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import jakarta.annotation.Resource;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -27,6 +33,7 @@ import java.util.Objects;
  *
  * @author <a href="https://github.com/SnowMeltingCrane">雪融鹤</a>
  */
+@Slf4j
 @Service
 public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatHistory> implements ChatHistoryService {
 
@@ -42,6 +49,45 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
         return this.remove(queryWrapper);
     }
 
+    /**
+     * 加载历史会话到内存中
+     *
+     * @param appId         应用id
+     * @param chatMemory    记忆
+     * @param maxCount      最大数量
+     * @return              加载的条数
+     */
+    @Override
+    public int loadChatHistoryToMemory(Long appId, MessageWindowChatMemory chatMemory, int maxCount) {
+        try {
+            QueryWrapper queryWrapper = QueryWrapper.create()
+                    .eq(ChatHistory::getAppId, appId)
+                    .orderBy(ChatHistory::getCreateTime, false)
+                    .limit(1, maxCount);
+            List<ChatHistory> historyList = this.list(queryWrapper);
+            if (CollUtil.isEmpty(historyList)) {
+                return 0;
+            }
+            // 反转列表确保按照时间正序
+            historyList = historyList.reversed();
+            // 按照时间顺序将消息添加到记忆中
+            int loadedCount = 0;
+            chatMemory.clear();
+            for (ChatHistory history : historyList) {
+                if (ChatHistoryMessageTypeEnum.USER.getValue().equals(history.getMessageType())) {
+                    chatMemory.add(UserMessage.from(history.getMessage()));
+                } else if (ChatHistoryMessageTypeEnum.AI.getValue().equals(history.getMessageType())) {
+                    chatMemory.add(AiMessage.from(history.getMessage()));
+                }
+                loadedCount++;
+            }
+            log.info("成功为appId:{} 加载{}条历史消息", appId, loadedCount);
+            return loadedCount;
+        } catch (Exception e) {
+            log.error("加载历史消息失败", e);
+            return 0;
+        }
+    }
 
     @Override
     public boolean addChatMessage(Long appId, String message, String messageType, Long userId) {
@@ -64,11 +110,11 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     /**
      * 获取应用对话历史列表
      *
-     * @param appId
-     * @param pageSize
-     * @param lastCreateTime
-     * @param loginUser
-     * @return
+     * @param appId          应用id
+     * @param pageSize       页面大小
+     * @param lastCreateTime 最后创建时间
+     * @param loginUser      登录用户
+     * @return 应用对话历史列表
      */
     @Override
     public Page<ChatHistory> listAppChatHistoryByPage(Long appId, int pageSize,
@@ -96,8 +142,8 @@ public class ChatHistoryServiceImpl extends ServiceImpl<ChatHistoryMapper, ChatH
     /**
      * 获取查询包装类
      *
-     * @param chatHistoryQueryRequest
-     * @return
+     * @param chatHistoryQueryRequest 查询条件
+     * @return 查询包装类
      */
     @Override
     public QueryWrapper getQueryWrapper(ChatHistoryQueryRequest chatHistoryQueryRequest) {

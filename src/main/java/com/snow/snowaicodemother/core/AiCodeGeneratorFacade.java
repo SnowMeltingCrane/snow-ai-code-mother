@@ -1,6 +1,7 @@
 package com.snow.snowaicodemother.core;
 
 import com.snow.snowaicodemother.ai.AiCodeGeneratorService;
+import com.snow.snowaicodemother.ai.AiCodeGeneratorServiceFactory;
 import com.snow.snowaicodemother.ai.model.HtmlCodeResult;
 import com.snow.snowaicodemother.ai.model.MultiFileCodeResult;
 import com.snow.snowaicodemother.core.parser.CodeParserExecutor;
@@ -25,21 +26,21 @@ import java.util.Objects;
 public class AiCodeGeneratorFacade {
 
     @Resource
-    private AiCodeGeneratorService aiCodeGeneratorService;
+    private AiCodeGeneratorServiceFactory aiCodeGeneratorServiceFactory;
 
     /**
      * 生成并保存代码
      *
-     * @param userMessage
-     * @param codeGenTypeEnum
-     * @param appId
-     * @return
+     * @param userMessage     用户提示词
+     * @param codeGenTypeEnum 生成模式
+     * @param appId           应用id
+     * @return 保存目录
      */
     public File generateAndSaveCode(String userMessage, CodeGenTypeEnum codeGenTypeEnum, Long appId) {
         if (Objects.isNull(codeGenTypeEnum)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "生成模式不能为空");
         }
-
+        AiCodeGeneratorService aiCodeGeneratorService = aiCodeGeneratorServiceFactory.getAiCodeGeneratorService(appId);
         return switch (codeGenTypeEnum) {
             case HTML -> {
                 HtmlCodeResult codeResult = aiCodeGeneratorService.generateHtmlCode(userMessage);
@@ -59,16 +60,16 @@ public class AiCodeGeneratorFacade {
     /**
      * 生成并保存代码(流式)
      *
-     * @param userMessage
-     * @param codeGenTypeEnum
-     * @param appId
-     * @return
+     * @param userMessage     用户提示词
+     * @param codeGenTypeEnum 生成模式
+     * @param appId           应用id
+     * @return 流式响应
      */
     public Flux<String> generateAndSaveCodeStream(String userMessage, CodeGenTypeEnum codeGenTypeEnum, Long appId) {
         if (Objects.isNull(codeGenTypeEnum)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "生成模式不能为空");
         }
-
+        AiCodeGeneratorService aiCodeGeneratorService = aiCodeGeneratorServiceFactory.getAiCodeGeneratorService(appId);
         return switch (codeGenTypeEnum) {
             case HTML -> {
                 Flux<String> result = aiCodeGeneratorService.generateHtmlCodeStream(userMessage);

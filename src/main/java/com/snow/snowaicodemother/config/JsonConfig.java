@@ -13,6 +13,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 /**
+ * @author xueruohang
  * Spring MVC Json 配置
  */
 @JsonComponent
