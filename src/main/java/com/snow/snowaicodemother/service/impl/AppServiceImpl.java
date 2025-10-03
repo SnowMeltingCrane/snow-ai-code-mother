@@ -8,10 +8,10 @@ import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
-import com.snow.snowaicodemother.common.ResultUtils;
 import com.snow.snowaicodemother.constant.AppConstant;
 import com.snow.snowaicodemother.constant.UserConstant;
 import com.snow.snowaicodemother.core.AiCodeGeneratorFacade;
+import com.snow.snowaicodemother.core.builder.VueProjectBuilder;
 import com.snow.snowaicodemother.core.handler.StreamHandlerExecutor;
 import com.snow.snowaicodemother.exception.BusinessException;
 import com.snow.snowaicodemother.exception.ErrorCode;
@@ -26,6 +26,7 @@ import com.snow.snowaicodemother.model.vo.AppVO;
 import com.snow.snowaicodemother.model.vo.UserVO;
 import com.snow.snowaicodemother.service.AppService;
 import com.snow.snowaicodemother.service.ChatHistoryService;
+import com.snow.snowaicodemother.service.ScreenshotsService;
 import com.snow.snowaicodemother.service.UserService;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +64,12 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
 
     @Resource
     private StreamHandlerExecutor streamHandlerExecutor;
+
+    @Resource
+    private VueProjectBuilder vueProjectBuilder;
+
+    @Resource
+    private ScreenshotsService screenshotsService;
 
 
     @Override
@@ -311,22 +318,62 @@ public class AppServiceImpl extends ServiceImpl<AppMapper, App> implements AppSe
         if (!sourceDir.exists() || !sourceDir.isDirectory()) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "应用代码路径不存在，请先生成应用");
         }
-        // 7.复制文件到部署目录
+        // 7. Vue 项目需要构建
+        CodeGenTypeEnum codeGenTypeEnum = CodeGenTypeEnum.getEnumByValue(codeGenType);
+        if(Objects.equals(codeGenTypeEnum, CodeGenTypeEnum.VUE_PROJECT)){
+            // Vue 项目需要进行构建
+            boolean buildSuccess = vueProjectBuilder.buildProject(sourceDirPath);
+            ThrowUtils.throwIf(!buildSuccess, ErrorCode.SYSTEM_ERROR, "Vue项目构建失败");
+            // 检查dist文件夹是否存在
+            File distDir = new File(sourceDirPath, "dist");
+            ThrowUtils.throwIf(!distDir.exists() , ErrorCode.SYSTEM_ERROR, "Vue项目构建完成但未生成dist文件夹");
+
+            // 将dist目录作为部署源
+            sourceDir = distDir;
+            log.info("Vue项目构建完成，将部署dist目录：{}",distDir.getAbsolutePath());
+        }
+        // 8.复制文件到部署目录
         String deployDirPath = AppConstant.CODE_DEPLOY_ROOT_DIR + File.separator + deployKey;
         try {
             FileUtil.copyContent(sourceDir, new File(deployDirPath), true);
         } catch (Exception e) {
             throw new BusinessException(ErrorCode.SYSTEM_ERROR, "应用部署失败" + e.getMessage());
         }
-        // 8.更新数据库
+        // 9.更新数据库
         App updateApp = new App();
         updateApp.setId(appId);
         updateApp.setDeployKey(deployKey);
         updateApp.setDeployedTime(LocalDateTime.now());
         boolean updateResult = this.updateById(updateApp);
         ThrowUtils.throwIf(!updateResult, ErrorCode.SYSTEM_ERROR, "更新应用部署信息失败");
-        // 9.返回URL
-        return String.format("%s/%s/", AppConstant.CODE_DEPLOY_HOST, deployKey);
+        // 10.返回可访问的url
+        String appDeployUrl = String.format("%s/%s/", AppConstant.CODE_DEPLOY_HOST, deployKey);
+
+        // 11.异步执行截图，并且更新应用封面
+        generateAppScreenshotAsync(appId,appDeployUrl);
+        return appDeployUrl;
+
+    }
+
+    /**
+     * 异步生成应用截图
+     *
+     * @param appId 应用ID
+     * @param appDeployUrl 应用部署URL
+     */
+    @Override
+    public void generateAppScreenshotAsync(Long appId, String appDeployUrl){
+        // 创建一个虚拟线程
+        Thread.startVirtualThread(()->{
+            String screenshotUrl = screenshotsService.generateAndUploadScreenshot(appDeployUrl);
+            // 更新应用封面
+            App updateApp = new App();
+            updateApp.setId(appId);
+            updateApp.setCover(screenshotUrl);
+            boolean updateResult = this.updateById(updateApp);
+            ThrowUtils.throwIf(!updateResult, ErrorCode.SYSTEM_ERROR, "更新应用封面失败");
+        });
+
     }
 
 }

@@ -9,6 +9,8 @@ import com.snow.snowaicodemother.ai.model.message.StreamMessage;
 import com.snow.snowaicodemother.ai.model.message.StreamMessageTypeEnum;
 import com.snow.snowaicodemother.ai.model.message.ToolExecutedMessage;
 import com.snow.snowaicodemother.ai.model.message.ToolRequestMessage;
+import com.snow.snowaicodemother.constant.AppConstant;
+import com.snow.snowaicodemother.core.builder.VueProjectBuilder;
 import com.snow.snowaicodemother.model.entity.User;
 import com.snow.snowaicodemother.model.enums.ChatHistoryMessageTypeEnum;
 import com.snow.snowaicodemother.service.ChatHistoryService;
@@ -29,6 +31,12 @@ import java.util.Set;
 @Slf4j
 @Component
 public class JsonMessageStreamHandler {
+
+    private final VueProjectBuilder vueProjectBuilder;
+
+    public JsonMessageStreamHandler(VueProjectBuilder vueProjectBuilder) {
+        this.vueProjectBuilder = vueProjectBuilder;
+    }
 
     /**
      * 处理 TokenStream（VUE_PROJECT）
@@ -58,6 +66,9 @@ public class JsonMessageStreamHandler {
                     // 流式响应完成后，添加 AI 消息到对话历史
                     String aiResponse = chatHistoryStringBuilder.toString();
                     chatHistoryService.addChatMessage(appId, aiResponse, ChatHistoryMessageTypeEnum.AI.getValue(), loginUser.getId());
+                    // 构建Vue项目并异步执行
+                    String projectPath = AppConstant.CODE_OUTPUT_ROOT_DIR + "/vue_project_" + appId;
+                    vueProjectBuilder.buildProjectAsync(projectPath);
                 })
                 .doOnError(error -> {
                     // 如果AI回复失败，也要记录错误消息
