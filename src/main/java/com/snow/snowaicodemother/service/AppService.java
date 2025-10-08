@@ -3,6 +3,7 @@ package com.snow.snowaicodemother.service;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
+import com.snow.snowaicodemother.model.dto.app.AppAddRequest;
 import com.snow.snowaicodemother.model.dto.app.AppDeployRequest;
 import com.snow.snowaicodemother.model.dto.app.AppQueryRequest;
 import com.snow.snowaicodemother.model.entity.App;
@@ -26,6 +27,8 @@ public interface AppService extends IService<App> {
      * @param add 是否为创建校验
      */
     void validApp(App app, boolean add);
+
+    Long createApp(AppAddRequest appAddRequest, User loginUser);
 
     /**
      * 获取查询包装类

@@ -4,6 +4,9 @@
     <div class="header-bar">
       <div class="header-left">
         <h1 class="app-name">{{ appInfo?.appName || '网站生成器' }}</h1>
+        <a-tag v-if="appInfo?.codeGenType" color="blue" class="code-gen-type-tag">
+          {{ formatCodeGenType(appInfo?.codeGenType) }}
+        </a-tag>
       </div>
       <div class="header-right">
         <a-button type="default" @click="showAppDetail">
@@ -12,6 +15,19 @@
           </template>
           应用详情
         </a-button>
+        <a-button
+          type="primary"
+          ghost
+          @click="downloadCode"
+          :loading="downloading"
+          :disabled="!isOwner"
+        >
+          <template #icon>
+            <DownloadOutlined />
+          </template>
+          下载代码
+        </a-button>
+
         <a-button type="primary" @click="deployApp" :loading="deploying">
           <template #icon>
             <CloudUploadOutlined />
@@ -151,10 +167,10 @@ import { useLoginUserStore } from '@/stores/loginUser'
 import {
   getAppVoById,
   deployApp as deployAppApi,
-  deleteApp as deleteAppApi,
+  deleteApp as deleteAppApi
 } from '@/api/appController'
 import { listAppChatHistory } from '@/api/chatHistoryController'
-import { CodeGenTypeEnum } from '@/utils/codeGenTypes'
+import { CodeGenTypeEnum, formatCodeGenType } from '@/utils/codeGenTypes'
 import request from '@/request'
 
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
@@ -168,6 +184,7 @@ import {
   SendOutlined,
   ExportOutlined,
   InfoCircleOutlined,
+  DownloadOutlined
 } from '@ant-design/icons-vue'
 
 const route = useRoute()
@@ -230,7 +247,7 @@ const loadChatHistory = async (isLoadMore = false) => {
   try {
     const params: API.listAppChatHistoryParams = {
       appId: appId.value,
-      pageSize: 10,
+      pageSize: 10
     }
     // 如果是加载更多，传递最后一条消息的创建时间作为游标
     if (isLoadMore && lastCreateTime.value) {
@@ -245,7 +262,7 @@ const loadChatHistory = async (isLoadMore = false) => {
           .map((chat) => ({
             type: (chat.messageType === 'user' ? 'user' : 'ai') as 'user' | 'ai',
             content: chat.message || '',
-            createTime: chat.createTime,
+            createTime: chat.createTime
           }))
           .reverse() // 反转数组，让老消息在前
         if (isLoadMore) {
@@ -325,7 +342,7 @@ const sendInitialMessage = async (prompt: string) => {
   // 添加用户消息
   messages.value.push({
     type: 'user',
-    content: prompt,
+    content: prompt
   })
 
   // 添加AI消息占位符
@@ -333,7 +350,7 @@ const sendInitialMessage = async (prompt: string) => {
   messages.value.push({
     type: 'ai',
     content: '',
-    loading: true,
+    loading: true
   })
 
   await nextTick()
@@ -356,7 +373,7 @@ const sendMessage = async () => {
   // 添加用户消息
   messages.value.push({
     type: 'user',
-    content: message,
+    content: message
   })
 
   // 添加AI消息占位符
@@ -364,7 +381,7 @@ const sendMessage = async () => {
   messages.value.push({
     type: 'ai',
     content: '',
-    loading: true,
+    loading: true
   })
 
   await nextTick()
@@ -387,20 +404,20 @@ const generateCode = async (userMessage: string, aiMessageIndex: number) => {
     // 构建URL参数
     const params = new URLSearchParams({
       appId: appId.value || '',
-      message: userMessage,
+      message: userMessage
     })
 
     const url = `${baseURL}/app/chat/gen/code?${params}`
 
     // 创建 EventSource 连接
     eventSource = new EventSource(url, {
-      withCredentials: true,
+      withCredentials: true
     })
 
     let fullContent = ''
 
     // 处理接收到的消息
-    eventSource.onmessage = function (event) {
+    eventSource.onmessage = function(event) {
       if (streamCompleted) return
 
       try {
@@ -422,7 +439,7 @@ const generateCode = async (userMessage: string, aiMessageIndex: number) => {
     }
 
     // 处理done事件
-    eventSource.addEventListener('done', function () {
+    eventSource.addEventListener('done', function() {
       if (streamCompleted) return
 
       streamCompleted = true
@@ -437,7 +454,7 @@ const generateCode = async (userMessage: string, aiMessageIndex: number) => {
     })
 
     // 处理错误
-    eventSource.onerror = function () {
+    eventSource.onerror = function() {
       if (streamCompleted || !isGenerating.value) return
       // 检查是否是正常的连接关闭
       if (eventSource?.readyState === EventSource.CONNECTING) {
@@ -495,7 +512,7 @@ const deployApp = async () => {
   deploying.value = true
   try {
     const res = await deployAppApi({
-      appId: appId.value as unknown as number,
+      appId: appId.value as unknown as number
     })
 
     if (res.data.code === 0 && res.data.data) {
@@ -567,6 +584,48 @@ onMounted(() => {
 onUnmounted(() => {
   // EventSource 会在组件卸载时自动清理
 })
+
+// 下载相关
+const downloading = ref(false)
+
+// 下载代码
+const downloadCode = async () => {
+  if (!appId.value) {
+    message.error('应用ID不存在')
+    return
+  }
+  downloading.value = true
+  try {
+    const API_BASE_URL = request.defaults.baseURL || ''
+    const url = `${API_BASE_URL}/app/download/${appId.value}`
+    const response = await fetch(url, {
+      method: 'GET',
+      credentials: 'include'
+    })
+    if (!response.ok) {
+      throw new Error(`下载失败: ${response.status}`)
+    }
+    // 获取文件名
+    const contentDisposition = response.headers.get('Content-Disposition')
+    const fileName = contentDisposition?.match(/filename="(.+)"/)?.[1] || `app-${appId.value}.zip`
+    // 下载文件
+    const blob = await response.blob()
+    const downloadUrl = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = downloadUrl
+    link.download = fileName
+    link.click()
+    // 清理
+    URL.revokeObjectURL(downloadUrl)
+    message.success('代码下载成功')
+  } catch (error) {
+    console.error('下载失败：', error)
+    message.error('下载失败，请重试')
+  } finally {
+    downloading.value = false
+  }
+}
+
 </script>
 
 <style scoped>
@@ -774,6 +833,11 @@ onUnmounted(() => {
   height: 100%;
   border: none;
 }
+
+.code-gen-type-tag {
+  font-size: 12px;
+}
+
 
 /* 响应式设计 */
 @media (max-width: 1024px) {
