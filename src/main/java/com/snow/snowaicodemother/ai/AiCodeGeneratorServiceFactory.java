@@ -2,7 +2,12 @@ package com.snow.snowaicodemother.ai;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import com.snow.snowaicodemother.ai.tools.FileDeleteTool;
+import com.snow.snowaicodemother.ai.tools.FileDirReadTool;
+import com.snow.snowaicodemother.ai.tools.FileModifyTool;
+import com.snow.snowaicodemother.ai.tools.FileReadTool;
 import com.snow.snowaicodemother.ai.tools.FileWriteTool;
+import com.snow.snowaicodemother.ai.tools.ToolManager;
 import com.snow.snowaicodemother.exception.BusinessException;
 import com.snow.snowaicodemother.exception.ErrorCode;
 import com.snow.snowaicodemother.model.enums.CodeGenTypeEnum;
@@ -43,6 +48,9 @@ public class AiCodeGeneratorServiceFactory {
 
     @Resource
     private ChatHistoryService chatHistoryService;
+
+    @Resource
+    private ToolManager toolManager;
 
     /**
      * 缓存ai服务
@@ -103,13 +111,12 @@ public class AiCodeGeneratorServiceFactory {
         return switch (codeGenType) {
             // Vue 项目生成，使用工具调用和推理模型
             case VUE_PROJECT -> AiServices.builder(AiCodeGeneratorService.class)
-                    .chatModel(chatModel)
                     .streamingChatModel(reasoningStreamingChatModel)
                     .chatMemoryProvider(memoryId -> chatMemory)
-                    .tools(new FileWriteTool())
-                    // 处理工具调用幻觉问题
-                    .hallucinatedToolNameStrategy(toolExecutionRequest ->
-                            ToolExecutionResultMessage.from(toolExecutionRequest, "Error: there is no tool called" + toolExecutionRequest.name()))
+                    .tools(toolManager.getAllTools())
+                    .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
+                            toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
+                    ))
                     .build();
             // HTML 和 多文件生成，使用流式对话模型
             case HTML, MULTI_FILE -> AiServices.builder(AiCodeGeneratorService.class)
