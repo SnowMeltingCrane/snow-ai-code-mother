@@ -4,7 +4,6 @@ import com.snow.snowaicodemother.constant.AppConstant;
 import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
-import dev.langchain4j.service.MemoryId;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
@@ -60,4 +59,3 @@ public class FileWriteTool {
         }
     }
 }
-

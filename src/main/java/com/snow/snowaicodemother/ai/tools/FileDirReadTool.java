@@ -13,6 +13,7 @@ import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.nio.file.Path;
@@ -25,6 +26,7 @@ import java.util.Set;
  * 使用 Hutool 简化文件操作
  */
 @Slf4j
+@Component
 public class FileDirReadTool extends BaseTool {
 
     /**
@@ -32,15 +34,13 @@ public class FileDirReadTool extends BaseTool {
      */
     private static final Set<String> IGNORED_NAMES = Set.of(
             "node_modules", ".git", "dist", "build", ".DS_Store",
-            ".env", "target", ".mvn", ".idea", ".vscode", "coverage"
-    );
+            ".env", "target", ".mvn", ".idea", ".vscode", "coverage");
 
     /**
      * 需要忽略的文件扩展名
      */
     private static final Set<String> IGNORED_EXTENSIONS = Set.of(
-            ".log", ".tmp", ".cache", ".lock"
-    );
+            ".log", ".tmp", ".cache", ".lock");
 
     @Tool("读取目录结构，获取指定目录下的所有文件和子目录信息")
     public String readDir(
@@ -109,7 +109,6 @@ public class FileDirReadTool extends BaseTool {
         return IGNORED_EXTENSIONS.stream().anyMatch(fileName::endsWith);
     }
 
-
     @Override
     public String getToolName() {
         return "readDir";
@@ -129,4 +128,3 @@ public class FileDirReadTool extends BaseTool {
         return String.format("[工具调用] %s %s", getDisplayName(), relativeDirPath);
     }
 }
-

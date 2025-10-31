@@ -11,6 +11,7 @@ import dev.langchain4j.agent.tool.P;
 import dev.langchain4j.agent.tool.Tool;
 import dev.langchain4j.agent.tool.ToolMemoryId;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +23,7 @@ import java.nio.file.Paths;
  * 支持 AI 通过工具调用的方式删除文件
  */
 @Slf4j
+@Component
 public class FileDeleteTool extends BaseTool {
 
     @Tool("删除指定路径的文件")
@@ -92,5 +94,3 @@ public class FileDeleteTool extends BaseTool {
         return String.format("[工具调用] %s %s", getDisplayName(), relativeFilePath);
     }
 }
-
-
