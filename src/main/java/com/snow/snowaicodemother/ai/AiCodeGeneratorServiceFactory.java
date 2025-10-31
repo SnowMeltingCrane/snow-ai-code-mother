@@ -2,11 +2,6 @@ package com.snow.snowaicodemother.ai;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import com.snow.snowaicodemother.ai.tools.FileDeleteTool;
-import com.snow.snowaicodemother.ai.tools.FileDirReadTool;
-import com.snow.snowaicodemother.ai.tools.FileModifyTool;
-import com.snow.snowaicodemother.ai.tools.FileReadTool;
-import com.snow.snowaicodemother.ai.tools.FileWriteTool;
 import com.snow.snowaicodemother.ai.tools.ToolManager;
 import com.snow.snowaicodemother.exception.BusinessException;
 import com.snow.snowaicodemother.exception.ErrorCode;
@@ -28,7 +23,7 @@ import java.time.Duration;
 /**
  * @author xueruohang
  * @date 2025/9/13 15:02
- * ai服务创建工厂
+ *       ai服务创建工厂
  */
 @Configuration
 @Slf4j
@@ -113,10 +108,9 @@ public class AiCodeGeneratorServiceFactory {
             case VUE_PROJECT -> AiServices.builder(AiCodeGeneratorService.class)
                     .streamingChatModel(reasoningStreamingChatModel)
                     .chatMemoryProvider(memoryId -> chatMemory)
-                    .tools(toolManager.getAllTools())
+                    .tools((Object[]) toolManager.getAllTools())
                     .hallucinatedToolNameStrategy(toolExecutionRequest -> ToolExecutionResultMessage.from(
-                            toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()
-                    ))
+                            toolExecutionRequest, "Error: there is no tool called " + toolExecutionRequest.name()))
                     .build();
             // HTML 和 多文件生成，使用流式对话模型
             case HTML, MULTI_FILE -> AiServices.builder(AiCodeGeneratorService.class)

@@ -4,7 +4,6 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.core.service.IService;
 import com.snow.snowaicodemother.model.dto.app.AppAddRequest;
-import com.snow.snowaicodemother.model.dto.app.AppDeployRequest;
 import com.snow.snowaicodemother.model.dto.app.AppQueryRequest;
 import com.snow.snowaicodemother.model.entity.App;
 import com.snow.snowaicodemother.model.entity.User;

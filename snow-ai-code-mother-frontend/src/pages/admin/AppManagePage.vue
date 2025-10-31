@@ -89,12 +89,12 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { listAppVoByPageByAdmin, deleteAppByAdmin, updateAppByAdmin } from '@/api/appController'
-import { CODE_GEN_TYPE_OPTIONS, formatCodeGenType } from '@/utils/codeGenTypes'
-import { formatTime } from '@/utils/time'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {message} from 'ant-design-vue'
+import {deleteAppByAdmin, listAppVoByPageByAdmin, updateAppByAdmin} from '@/api/appController'
+import {CODE_GEN_TYPE_OPTIONS, formatCodeGenType} from '@/utils/codeGenTypes'
+import {formatTime} from '@/utils/time'
 import UserInfo from '@/components/UserInfo.vue'
 
 const router = useRouter()

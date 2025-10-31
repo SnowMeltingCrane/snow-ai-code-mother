@@ -66,11 +66,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { listAllChatHistoryByPageForAdmin } from '@/api/chatHistoryController'
-import { formatTime } from '@/utils/time'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {message} from 'ant-design-vue'
+import {listAllChatHistoryByPageForAdmin} from '@/api/chatHistoryController'
+import {formatTime} from '@/utils/time'
 
 const router = useRouter()
 

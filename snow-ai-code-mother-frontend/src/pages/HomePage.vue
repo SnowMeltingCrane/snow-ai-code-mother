@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { useLoginUserStore } from '@/stores/loginUser'
-import { addApp, listMyAppVoByPage, listGoodAppVoByPage } from '@/api/appController'
-import { getDeployUrl } from '@/config/env'
+import {onMounted, reactive, ref} from 'vue'
+import {useRouter} from 'vue-router'
+import {message} from 'ant-design-vue'
+import {useLoginUserStore} from '@/stores/loginUser'
+import {addApp, listGoodAppVoByPage, listMyAppVoByPage} from '@/api/appController'
+import {getDeployUrl} from '@/config/env'
 import AppCard from '@/components/AppCard.vue'
 
 const router = useRouter()

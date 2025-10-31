@@ -37,10 +37,10 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
-import { userRegister } from '@/api/userController.ts'
-import { message } from 'ant-design-vue'
-import { reactive } from 'vue'
+import {useRouter} from 'vue-router'
+import {userRegister} from '@/api/userController.ts'
+import {message} from 'ant-design-vue'
+import {reactive} from 'vue'
 
 const router = useRouter()
 

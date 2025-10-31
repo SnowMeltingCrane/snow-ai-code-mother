@@ -5,7 +5,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
-import com.snow.snowaicodemother.ai.AiCodeGenTypeRoutingService;
 import com.snow.snowaicodemother.annotation.AuthCheck;
 import com.snow.snowaicodemother.common.BaseResponse;
 import com.snow.snowaicodemother.common.DeleteRequest;
@@ -22,7 +21,6 @@ import com.snow.snowaicodemother.model.dto.app.AppQueryRequest;
 import com.snow.snowaicodemother.model.dto.app.AppUpdateRequest;
 import com.snow.snowaicodemother.model.entity.App;
 import com.snow.snowaicodemother.model.entity.User;
-import com.snow.snowaicodemother.model.enums.CodeGenTypeEnum;
 import com.snow.snowaicodemother.model.vo.AppVO;
 import com.snow.snowaicodemother.service.AppService;
 import com.snow.snowaicodemother.service.ProjectDownloadService;
@@ -75,8 +73,8 @@ public class AppController {
      */
     @GetMapping("/download/{appId}")
     public void downloadAppCode(@PathVariable Long appId,
-                                HttpServletRequest request,
-                                HttpServletResponse response) {
+            HttpServletRequest request,
+            HttpServletResponse response) {
         // 1. 基础校验
         ThrowUtils.throwIf(Objects.isNull(appId) || appId <= 0, ErrorCode.PARAMS_ERROR, "应用ID无效");
         // 2. 查询应用信息
@@ -101,17 +99,16 @@ public class AppController {
         projectDownloadService.downloadProjectAsZip(sourceDirPath, downloadFileName, response);
     }
 
-
     @GetMapping(value = "/chat/gen/code", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ServerSentEvent<String>> chatToGenCode(@RequestParam Long appId,
-                                                       @RequestParam String message,
-                                                       HttpServletRequest request) {
-        //参数校验
+            @RequestParam String message,
+            HttpServletRequest request) {
+        // 参数校验
         ThrowUtils.throwIf(Objects.isNull(appId) || appId <= 0, ErrorCode.PARAMS_ERROR, "应用id错误");
         ThrowUtils.throwIf(StrUtil.isBlank(message), ErrorCode.PARAMS_ERROR, "提示词不能为空");
-        //获取当前登录用户
+        // 获取当前登录用户
         User loginUser = userService.getLoginUser(request);
-        //调用服务生成代码（SSE流式返回）
+        // 调用服务生成代码（SSE流式返回）
         Flux<String> contentFlux = appService.chatToGenCode(appId, message, loginUser);
         return contentFlux
                 .map(chunk -> {
@@ -124,8 +121,7 @@ public class AppController {
                 .concatWith(Mono.just(ServerSentEvent.<String>builder()
                         .event("done")
                         .data("")
-                        .build()
-                ));
+                        .build()));
     }
 
     /**
@@ -161,7 +157,6 @@ public class AppController {
         String deployUrl = appService.deployApp(appId, loginUser);
         return ResultUtils.success(deployUrl);
     }
-
 
     /**
      * 删除应用（用户只能删除自己的应用）
@@ -207,7 +202,6 @@ public class AppController {
         boolean result = appService.removeById(id);
         return ResultUtils.success(result);
     }
-
 
     /**
      * 删除我的应用
@@ -291,7 +285,6 @@ public class AppController {
         return ResultUtils.success(true);
     }
 
-
     /**
      * 根据 id 获取应用（仅管理员）
      *
@@ -340,7 +333,6 @@ public class AppController {
         return ResultUtils.success(appService.getAppVO(app));
     }
 
-
     /**
      * 管理员分页获取应用列表
      *
@@ -387,7 +379,6 @@ public class AppController {
         return ResultUtils.success(appVOPage);
     }
 
-
     /**
      * 分页获取当前用户创建的应用列表
      *
@@ -396,7 +387,8 @@ public class AppController {
      * @return 应用列表
      */
     @PostMapping("/my/list/page/vo")
-    public BaseResponse<Page<AppVO>> listMyAppVOByPage(@RequestBody AppQueryRequest appQueryRequest, HttpServletRequest request) {
+    public BaseResponse<Page<AppVO>> listMyAppVOByPage(@RequestBody AppQueryRequest appQueryRequest,
+            HttpServletRequest request) {
         ThrowUtils.throwIf(appQueryRequest == null, ErrorCode.PARAMS_ERROR);
         User loginUser = userService.getLoginUser(request);
         // 限制每页最多 20 个
@@ -413,6 +405,5 @@ public class AppController {
         appVOPage.setRecords(appVOList);
         return ResultUtils.success(appVOPage);
     }
-
 
 }

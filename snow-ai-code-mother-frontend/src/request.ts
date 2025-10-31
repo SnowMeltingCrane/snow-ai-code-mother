@@ -1,6 +1,6 @@
 import axios from 'axios'
-import { message } from 'ant-design-vue'
-import { API_BASE_URL } from '@/config/env'
+import {message} from 'ant-design-vue'
+import {API_BASE_URL} from '@/config/env'
 
 // 创建 Axios 实例
 const myAxios = axios.create({

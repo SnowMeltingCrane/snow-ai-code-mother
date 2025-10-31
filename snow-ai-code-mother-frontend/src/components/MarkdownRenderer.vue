@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import {computed} from 'vue'
 import MarkdownIt from 'markdown-it'
 import hljs from 'highlight.js'
 

@@ -210,33 +210,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, nextTick, onUnmounted, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { useLoginUserStore } from '@/stores/loginUser'
+import {computed, nextTick, onMounted, onUnmounted, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import {message} from 'ant-design-vue'
+import {useLoginUserStore} from '@/stores/loginUser'
 import {
-  getAppVoById,
-  deployApp as deployAppApi,
   deleteApp as deleteAppApi,
+  deployApp as deployAppApi,
+  getAppVoById,
 } from '@/api/appController'
-import { listAppChatHistory } from '@/api/chatHistoryController'
-import { CodeGenTypeEnum, formatCodeGenType } from '@/utils/codeGenTypes'
+import {listAppChatHistory} from '@/api/chatHistoryController'
+import {CodeGenTypeEnum, formatCodeGenType} from '@/utils/codeGenTypes'
 import request from '@/request'
 
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import AppDetailModal from '@/components/AppDetailModal.vue'
 import DeploySuccessModal from '@/components/DeploySuccessModal.vue'
 import aiAvatar from '@/assets/aiAvatar.png'
-import { API_BASE_URL, getStaticPreviewUrl } from '@/config/env'
-import { VisualEditor, type ElementInfo } from '@/utils/visualEditor'
+import {API_BASE_URL, getStaticPreviewUrl} from '@/config/env'
+import {type ElementInfo, VisualEditor} from '@/utils/visualEditor'
 
 import {
   CloudUploadOutlined,
-  SendOutlined,
-  ExportOutlined,
-  InfoCircleOutlined,
   DownloadOutlined,
   EditOutlined,
+  ExportOutlined,
+  InfoCircleOutlined,
+  SendOutlined,
 } from '@ant-design/icons-vue'
 
 const route = useRoute()

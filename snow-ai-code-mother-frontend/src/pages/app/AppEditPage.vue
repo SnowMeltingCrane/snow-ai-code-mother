@@ -117,16 +117,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, computed } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import { message } from 'ant-design-vue'
-import { useLoginUserStore } from '@/stores/loginUser'
-import { getAppVoById, updateApp, updateAppByAdmin } from '@/api/appController'
-import { formatCodeGenType } from '@/utils/codeGenTypes'
-import { formatTime } from '@/utils/time'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {useRoute, useRouter} from 'vue-router'
+import type {FormInstance} from 'ant-design-vue'
+import {message} from 'ant-design-vue'
+import {useLoginUserStore} from '@/stores/loginUser'
+import {getAppVoById, updateApp, updateAppByAdmin} from '@/api/appController'
+import {formatCodeGenType} from '@/utils/codeGenTypes'
+import {formatTime} from '@/utils/time'
 import UserInfo from '@/components/UserInfo.vue'
-import { getStaticPreviewUrl } from '@/config/env'
-import type { FormInstance } from 'ant-design-vue'
+import {getStaticPreviewUrl} from '@/config/env'
 
 const route = useRoute()
 const router = useRouter()

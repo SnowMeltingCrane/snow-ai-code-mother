@@ -43,9 +43,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { message } from 'ant-design-vue'
-import { deleteUser, listUserVoByPage } from '@/api/userController.ts'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {message} from 'ant-design-vue'
+import {deleteUser, listUserVoByPage} from '@/api/userController.ts'
 import dayjs from 'dayjs'
 
 const columns = [

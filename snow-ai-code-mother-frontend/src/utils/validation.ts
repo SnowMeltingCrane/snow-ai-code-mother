@@ -1,4 +1,4 @@
-import { FORM_RULES } from './constants'
+import {FORM_RULES} from './constants'
 
 /**
  * 验证应用名称
