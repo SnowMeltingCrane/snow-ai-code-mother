@@ -1,16 +1,11 @@
 package com.snow.snowaicodemother.langgraph4j.node;
 
 import com.snow.snowaicodemother.langgraph4j.ai.ImageCollectionService;
-import com.snow.snowaicodemother.langgraph4j.enums.ImageCategoryEnum;
-import com.snow.snowaicodemother.langgraph4j.model.ImageResource;
 import com.snow.snowaicodemother.langgraph4j.state.WorkflowContext;
 import com.snow.snowaicodemother.utils.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.bsc.langgraph4j.action.AsyncNodeAction;
 import org.bsc.langgraph4j.prebuilt.MessagesState;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static org.bsc.langgraph4j.action.AsyncNodeAction.node_async;
 

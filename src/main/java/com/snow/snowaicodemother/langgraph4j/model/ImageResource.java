@@ -1,6 +1,6 @@
 package com.snow.snowaicodemother.langgraph4j.model;
 
-import com.snow.snowaicodemother.langgraph4j.enums.ImageCategoryEnum;
+import com.snow.snowaicodemother.langgraph4j.model.enums.ImageCategoryEnum;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

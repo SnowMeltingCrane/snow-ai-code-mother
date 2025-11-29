@@ -1,4 +1,4 @@
-package com.snow.snowaicodemother.langgraph4j.enums;
+package com.snow.snowaicodemother.langgraph4j.model.enums;
 
 import cn.hutool.core.util.ObjUtil;
 import lombok.Getter;

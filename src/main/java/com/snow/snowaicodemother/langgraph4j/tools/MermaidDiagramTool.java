@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.system.SystemUtil;
 import com.snow.snowaicodemother.exception.BusinessException;
 import com.snow.snowaicodemother.exception.ErrorCode;
-import com.snow.snowaicodemother.langgraph4j.enums.ImageCategoryEnum;
+import com.snow.snowaicodemother.langgraph4j.model.enums.ImageCategoryEnum;
 import com.snow.snowaicodemother.langgraph4j.model.ImageResource;
 import com.snow.snowaicodemother.manager.CosManager;
 import dev.langchain4j.agent.tool.P;
